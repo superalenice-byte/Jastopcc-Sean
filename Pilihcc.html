@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pilih CC - Topaz CC</title>
+<style>
+  :root{
+    --bg: #0b0a12;
+    --bg-soft: #14121f;
+    --card: #191726;
+    --line: #2a273b;
+    --accent: #ff3d81;
+    --accent-2: #7c5cff;
+    --gold: #ffcf6b;
+    --text: #f3f1f8;
+    --muted: #a29cb8;
+    --radius: 14px;
+  }
+
+  *{ box-sizing: border-box; margin:0; padding:0; }
+
+  html{ scroll-behavior: smooth; }
+
+  body{
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    line-height: 1.5;
+  }
+
+  h1, h2, h3{
+    font-family: 'Poppins', 'Segoe UI', system-ui, sans-serif;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+
+  a{ text-decoration: none; color: inherit; }
+
+  /* ===== NAVBAR ===== */
+  .navbar{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 6%;
+    background: rgba(11,10,18,0.85);
+    backdrop-filter: blur(10px);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .logo{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+  }
+
+  .logo-mark{
+    width: 26px;
+    height: 26px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, var(--accent-2), var(--accent));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 800;
+    color: #fff;
+  }
+
+  .nav-menu{
+    display: flex;
+    gap: 32px;
+  }
+
+  .nav-menu a{
+    font-size: 14px;
+    color: var(--muted);
+    transition: color 0.2s;
+  }
+
+  .nav-menu a:hover,
+  .nav-menu a.active{ color: var(--text); }
+
+  .status-badge{
+    font-size: 12px;
+    padding: 6px 14px;
+    border-radius: 999px;
+    background: rgba(60, 220, 140, 0.12);
+    color: #4ee6a0;
+    border: 1px solid rgba(78, 230, 160, 0.3);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+  }
+
+  .status-badge::before{
+    content: "";
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #4ee6a0;
+    box-shadow: 0 0 8px #4ee6a0;
+  }
+
+  /* ===== PAGE HEADER ===== */
+  .page-header{
+    text-align: center;
+    padding: 56px 6% 10px;
+  }
+
+  .page-header h1{
+    font-size: clamp(28px, 4vw, 38px);
+  }
+
+  .page-header p{
+    margin-top: 10px;
+    color: var(--muted);
+    font-size: 14px;
+  }
+
+  /* ===== CC GRID ===== */
+  .cc-wrap{
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 40px 6% 20px;
+  }
+
+  .cc-grid{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+  }
+
+  .cc-card{
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    overflow: hidden;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+
+  .cc-card:hover{
+    border-color: var(--accent-2);
+    transform: translateY(-3px);
+  }
+
+  .cc-thumb{
+    position: relative;
+    aspect-ratio: 3/4;
+    overflow: hidden;
+  }
+
+  /* Berlaku untuk gambar maupun video di dalam thumbnail */
+  .cc-thumb img,
+  .cc-thumb video{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .cc-tag{
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 999px;
+    color: #fff;
+    backdrop-filter: blur(4px);
+    z-index: 2;
+  }
+
+  .cc-tag.original{ background: rgba(255,255,255,0.18); }
+  .cc-tag.recommended{ background: rgba(255,183,3,0.9); color: #241a00; }
+  .cc-tag.new{ background: rgba(255,61,96,0.9); }
+  .cc-tag.different{ background: rgba(255,255,255,0.16); }
+  .cc-tag.free{ background: rgba(255,61,96,0.9); }
+
+  .cc-info{
+    padding: 12px 14px 14px;
+  }
+
+  .cc-info h3{
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+
+  .btn-pilih{
+    display: block;
+    width: 100%;
+    text-align: center;
+    padding: 10px 0;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 600;
+    background: var(--accent-2);
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    transition: filter 0.2s, transform 0.2s;
+  }
+
+  .btn-pilih:hover{
+    filter: brightness(1.12);
+    transform: translateY(-1px);
+  }
+
+  /* ===== BACK BUTTON ===== */
+  .back-wrap{
+    text-align: center;
+    padding: 30px 6% 80px;
+  }
+
+  .btn-back{
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 11px 26px;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    font-size: 13px;
+    color: var(--text);
+    transition: border-color 0.2s, background 0.2s;
+  }
+
+  .btn-back:hover{
+    border-color: var(--accent-2);
+    background: var(--bg-soft);
+  }
+
+  /* ===== FOOTER ===== */
+  .footer{
+    text-align: center;
+    padding: 24px 6%;
+    border-top: 1px solid var(--line);
+    color: var(--muted);
+    font-size: 13px;
+  }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 760px){
+    .cc-grid{ grid-template-columns: repeat(2, 1fr); }
+    .nav-menu{ display: none; }
+  }
+
+  @media (max-width: 420px){
+    .cc-grid{ grid-template-columns: 1fr 1fr; gap: 12px; }
+    .cc-info h3{ font-size: 12.5px; }
+  }
+</style>
+</head>
+<body>
+
+  <!-- ===== NAVBAR ===== -->
+  <header class="navbar">
+    <div class="logo">
+      <span class="logo-mark">S</span>
+      TOPAZ CC Sean
+    </div>
+
+    <nav class="nav-menu">
+      <a href="Homepage.html">Home</a>
+      <a href="pilih-cc.html" class="active">Pilih CC</a>
+      <a href="Homepage.html#cara-order" class="tab.activeBackground ">Lihat Cara Order</a>
+      <a href="Homepage.html#kontak">Kontak</a>
+    </nav>
+
+    <div class="status-badge">Sedang Online</div>
+  </header>
+
+  <!-- ===== PAGE HEADER ===== -->
+  <section class="page-header">
+    <h1>Pilih CC</h1>
+    <p>Pilih CC yang cocok buat video kamu (Semua CC harganya sama)</p>
+  </section>
+
+  <!-- ===== CC GRID ===== -->
+  <section class="cc-wrap">
+    <div class="cc-grid">
+
+      <div class="cc-card">
+        <div class="cc-thumb">
+           <video autoplay muted loop playsinline>
+            <source src="seansett.mp4" type="video/mp4">
+          </video>
+        </div>
+        <div class="cc-info">
+          <h3>Topaz only</h3>
+          <a href="input_video.html" class="btn-pilih">Topaz only</a>
+        </div>
+      </div>
+
+      <div class="cc-card">
+        <div class="cc-thumb">
+          <video autoplay muted loop playsinline>
+            <source src="Cc Luxsharp.mp4" type="video/mp4">
+          </video>
+          <span class="cc-tag recommended">Recommended</span>
+        </div>
+        <div class="cc-info">
+          <h3>1. Luxsharp</h3>
+          <a href="input_video.html" class="btn-pilih">Pilih CC</a>
+        </div>
+      </div>
+
+      <div class="cc-card">
+        <div class="cc-thumb">
+          <video autoplay muted loop playsinline>
+            <source src="Cc Hetisate.mp4" type="video/mp4">
+          </video>
+          <span class="cc-tag new">New</span>
+        </div>
+        <div class="cc-info">
+          <h3>2. Hesitate</h3>
+          <a href="input_video.html" class="btn-pilih">Pilih CC</a>
+        </div>
+      </div>
+
+      <div class="cc-card">
+        <div class="cc-thumb">
+          <video autoplay muted loop playsinline>
+            <source src="Cc Idhasatrya14.mp4" type="video/mp4">
+          </video>
+          <span class="cc-tag new">New</span>
+        </div>
+        <div class="cc-info">
+          <h3>3. ldhasatrya14</h3>
+          <a href="input_video.html" class="btn-pilih">Pilih CC</a>
+        </div>
+      </div>
+
+      <div class="cc-card">
+        <div class="cc-thumb">
+          <video autoplay muted loop playsinline>
+            <source src="Cc 6 (Itt.Kqmxdow1).mp4" type="video/mp4">
+          </video>
+          <span class="cc-tag new">New</span>
+        </div>
+        <div class="cc-info">
+          <h3>4. itt.kqmxdow1-1</h3>
+          <a href="input_video.html" class="btn-pilih">Pilih CC</a>
+        </div>
+      </div>
+
+      <div class="cc-card">
+        <div class="cc-thumb">
+          <video autoplay muted loop playsinline>
+            <source src="Cc 7 (Itt.Kqmxdow1).mp4" type="video/mp4">
+          </video>
+          <span class="cc-tag new">New</span>
+        </div>
+        <div class="cc-info">
+          <h3>5. itt.kqmxdow1-2</h3>
+          <a href="input_video.html" class="btn-pilih">Pilih CC</a>
+        </div>
+      </div>
+
+      <div class="cc-card">
+        <div class="cc-thumb">
+          <video autoplay muted loop playsinline>
+            <source src="Cc 8 Partd.mp4" type="video/mp4">
+          </video>
+          <span class="cc-tag new">New</span>
+        </div>
+        <div class="cc-info">
+          <h3>6. Parthedits</h3>
+          <a href="input_video.html" class="btn-pilih">Pilih CC</a>
+        </div>
+      </div>
+
+      <div class="cc-card">
+        <div class="cc-thumb">
+          <video autoplay muted loop playsinline>
+            <source src="Cc 9 Sharp.mp4" type="video/mp4">
+          </video>
+          <span class="cc-tag new">New</span>
+        </div>
+        <div class="cc-info">
+          <h3>7. Sharpen</h3>
+          <a href="input_video.html" class="btn-pilih">Pilih CC</a>
+        </div>
+      </div>
+
+      <div class="cc-card">
+        <div class="cc-thumb">
+          <video autoplay muted loop playsinline>
+            <source src="Cc Chyko.mp4" type="video/mp4">
+          </video>
+        </div>
+        <div class="cc-info">
+          <h3>8. Chyko</h3>
+          <a href="input_video.html" class="btn-pilih">Pilih CC</a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===== BACK BUTTON ===== -->
+  <div class="back-wrap">
+    <a href="Homepage.html" class="btn-back">&larr; Kembali ke Home</a>
+  </div>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="footer">
+    <p>&copy; 2024 TOPAZ CC - All Rights Reserved</p>
+  </footer>
+
+</body>
+</html>

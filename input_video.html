@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Masukkan Video</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            text-align: center;
+            margin-top: 60px;
+        }
+        textarea {
+            padding: 3px;
+        }
+        textarea::placeholder {
+            font-size: 13px;
+            color: gray;
+        }
+        h2 {
+            margin-top: 3rem;
+            margin-bottom: 0;
+        }
+        .tombol {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 8px 20px;
+            background: #333;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .spinner {
+            margin: 30px auto;
+            width: 50px;
+            height: 50px;
+            border: 6px solid #ddd;
+            border-top: 6px solid #333;
+            border-radius: 50%;
+            animation: putar 1s linear infinite;
+        }
+        @keyframes putar {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .centang {
+            font-size: 60px;
+            color: green;
+        }
+        video {
+            max-width: 400px;
+            margin-top: 20px;
+        }
+        #bagian-proses, #bagian-selesai {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="bagian-input">
+        <h1>Masukkan Video</h1>
+        <p id="cc-terpilih" style="color: gray;"></p>
+        <input type="file" id="file-video" accept="video/*">
+
+        <h2>Notes</h2>
+        <textarea id="catatan" rows="4" cols="40" placeholder="Contoh: Hilangkan hazeflare"></textarea>
+
+        <br>
+        <button class="tombol" onclick="mulaiProses()">Proses Video</button>
+    </div>
+
+    <div id="bagian-proses">
+        <h1>Sedang memproses video kamu...</h1>
+        <p>Mohon tunggu sebentar</p>
+        <div class="spinner"></div>
+    </div>
+
+    <div id="bagian-selesai">
+        <div class="centang">✓</div>
+        <h1>Video kamu sudah selesai diproses!</h1>
+        <video id="video-hasil" controls></video>
+        <br>
+        <a id="link-download" class="tombol" download>Download Video</a>
+    </div>
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const ccDipilih = params.get('cc') || 'Tanpa CC';
+        document.getElementById('cc-terpilih').textContent = 'CC dipilih: ' + ccDipilih;
+
+        let videoUrl = '';
+        let namaFile = '';
+
+        function mulaiProses() {
+            const fileInput = document.getElementById('file-video');
+            if (fileInput.files.length === 0) {
+                alert('Pilih video dulu ya!');
+                return;
+            }
+
+            document.getElementById('bagian-input').style.display = 'none';
+            document.getElementById('bagian-proses').style.display = 'block';
+
+            const file = fileInput.files[0];
+            namaFile = file.name;
+            videoUrl = URL.createObjectURL(file);
+
+            setTimeout(function() {
+                document.getElementById('bagian-proses').style.display = 'none';
+                document.getElementById('bagian-selesai').style.display = 'block';
+
+                document.getElementById('video-hasil').src = videoUrl;
+                const linkDownload = document.getElementById('link-download');
+                linkDownload.href = videoUrl;
+                linkDownload.download = namaFile;
+            }, 3000);
+        }
+
+        function masukGaleri() {
+            const catatan = document.getElementById('catatan').value;
+            const galeri = JSON.parse(localStorage.getItem('galeriVideo') || '[]');
+
+            galeri.push({
+                nama: namaFile,
+                cc: ccDipilih,
+                catatan: catatan,
+                tanggal: new Date().toLocaleString('id-ID')
+            });
+
+            localStorage.setItem('galeriVideo', JSON.stringify(galeri));
+            alert('Berhasil disimpan ke galeri!');
+        }
+    </script>
+
+</body>
+</html>
